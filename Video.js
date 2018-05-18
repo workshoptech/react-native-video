@@ -273,6 +273,7 @@ Video.propTypes = {
   resizeMode: PropTypes.string,
   poster: PropTypes.string,
   repeat: PropTypes.bool,
+  captions: PropTypes.bool,
   paused: PropTypes.bool,
   muted: PropTypes.bool,
   volume: PropTypes.number,

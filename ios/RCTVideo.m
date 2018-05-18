@@ -40,6 +40,7 @@ static NSString *const timedMetadata = @"timedMetadata";
   BOOL _muted;
   BOOL _paused;
   BOOL _repeat;
+  BOOL _captions;
   BOOL _playbackStalled;
   BOOL _playInBackground;
   BOOL _playWhenInactive;
@@ -613,6 +614,7 @@ static NSString *const timedMetadata = @"timedMetadata";
     [_player setMuted:NO];
   }
 
+  [self setCaptions:_captions];
   [self setResizeMode:_resizeMode];
   [self setRepeat:_repeat];
   [self setPaused:_paused];
@@ -621,6 +623,19 @@ static NSString *const timedMetadata = @"timedMetadata";
 
 - (void)setRepeat:(BOOL)repeat {
   _repeat = repeat;
+}
+
+- (void)setCaptions:(BOOL)captions {
+  AVMediaSelectionGroup *group = [_player.currentItem.asset
+                                  mediaSelectionGroupForMediaCharacteristic:AVMediaCharacteristicLegible];
+  AVMediaSelectionOption *option;
+  if (captions) {
+    option = group.defaultOption;
+  } else {
+    option = nil;
+  }
+  [_player.currentItem selectMediaOption:option inMediaSelectionGroup:group];
+  _captions = captions;
 }
 
 - (BOOL)getFullscreen
