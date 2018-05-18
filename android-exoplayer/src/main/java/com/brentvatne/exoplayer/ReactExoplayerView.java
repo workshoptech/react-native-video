@@ -97,6 +97,7 @@ class ReactExoplayerView extends FrameLayout implements
     private Uri srcUri;
     private String extension;
     private boolean repeat;
+    private boolean captions;
     private boolean disableFocus;
     private float mProgressUpdateInterval = 250.0f;
     private boolean playInBackground = false;
@@ -543,6 +544,16 @@ class ReactExoplayerView extends FrameLayout implements
         return false;
     }
 
+    public int getTextTrackRendererIndex() {
+        int rendererCount = player.getRendererCount();
+        for (int rendererIndex = 0; rendererIndex < rendererCount; rendererIndex++) {
+            if (player.getRendererType(rendererIndex) == C.TRACK_TYPE_TEXT) {
+                return rendererIndex;
+            }
+        }
+        return C.INDEX_UNSET;
+    }
+
     @Override
     public void onMetadata(Metadata metadata) {
         eventEmitter.timedMetadata(metadata);
@@ -595,6 +606,15 @@ class ReactExoplayerView extends FrameLayout implements
 
     public void setRepeatModifier(boolean repeat) {
         this.repeat = repeat;
+    }
+
+    public void setCaptionsModifier(boolean captions) {
+        int index = getTextTrackRendererIndex();
+        if (index == C.INDEX_UNSET) {
+            return;
+        }
+        trackSelector.setRendererDisabled(index, !captions);
+        this.captions = captions;
     }
 
     public void setPausedModifier(boolean paused) {
