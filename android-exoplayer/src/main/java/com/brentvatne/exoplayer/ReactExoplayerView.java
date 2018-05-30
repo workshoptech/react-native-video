@@ -25,6 +25,7 @@ import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.PlaybackParameters;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
@@ -472,6 +473,12 @@ class ReactExoplayerView extends FrameLayout implements
             // which they seeked.
             updateResumePosition();
         }
+        // When repeat is turned on, reaching the end of the video will not cause a state change
+        // so we need to explicitly detect it.
+        if (reason == ExoPlayer.DISCONTINUITY_REASON_PERIOD_TRANSITION
+                && player.getRepeatMode() == Player.REPEAT_MODE_ONE) {
+            eventEmitter.end();
+        }
     }
 
     @Override
@@ -621,6 +628,13 @@ class ReactExoplayerView extends FrameLayout implements
     }
 
     public void setRepeatModifier(boolean repeat) {
+        if (player != null) {
+            if (repeat) {
+                player.setRepeatMode(Player.REPEAT_MODE_ONE);
+            } else {
+                player.setRepeatMode(Player.REPEAT_MODE_OFF);
+            }
+        }
         this.repeat = repeat;
     }
 
