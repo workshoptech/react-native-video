@@ -639,12 +639,26 @@ class ReactExoplayerView extends FrameLayout implements
     }
 
     public void setCaptionsModifier(boolean captions) {
+        this.captions = captions;
         int index = getTextTrackRendererIndex();
         if (index == C.INDEX_UNSET) {
             return;
         }
-        trackSelector.setRendererDisabled(index, !captions);
-        this.captions = captions;
+        MappingTrackSelector.MappedTrackInfo info = trackSelector.getCurrentMappedTrackInfo();
+        if (info == null) {
+            return;
+        }
+        TrackGroupArray groups = info.getTrackGroups(index);
+        if (groups.length == 0) {
+            return;
+        }
+        if (this.captions) {
+            MappingTrackSelector.SelectionOverride override
+                    = new MappingTrackSelector.SelectionOverride(new FixedTrackSelection.Factory(), 1, 0);
+            trackSelector.setSelectionOverride(index, groups, override);
+        } else {
+            trackSelector.clearSelectionOverride(index, groups);
+        }
     }
 
     public void setPausedModifier(boolean paused) {
