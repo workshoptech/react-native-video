@@ -642,7 +642,7 @@ static NSString *const timedMetadata = @"timedMetadata";
                                   mediaSelectionGroupForMediaCharacteristic:AVMediaCharacteristicLegible];
   AVMediaSelectionOption *option;
   if (captions) {
-    option = group.defaultOption;
+    option = [group.options objectAtIndex:0];
   } else {
     option = nil;
   }
