@@ -654,7 +654,7 @@ class ReactExoplayerView extends FrameLayout implements
         }
         if (this.captions) {
             MappingTrackSelector.SelectionOverride override
-                    = new MappingTrackSelector.SelectionOverride(new FixedTrackSelection.Factory(), 1, 0);
+                    = new MappingTrackSelector.SelectionOverride(new FixedTrackSelection.Factory(), 0, 0);
             trackSelector.setSelectionOverride(index, groups, override);
         } else {
             trackSelector.clearSelectionOverride(index, groups);
