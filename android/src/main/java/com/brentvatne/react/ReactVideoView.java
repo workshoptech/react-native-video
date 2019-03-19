@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.WindowManager;
 import android.view.View;
 import android.view.Window;
 import android.webkit.CookieManager;
@@ -113,6 +112,7 @@ public class ReactVideoView extends ScalableVideoView implements
     private Runnable mProgressUpdateRunnable = null;
     private Handler videoControlHandler = new Handler();
     private MediaController mediaController;
+
 
     private String mSrcUriString = null;
     private String mSrcType = "mp4";
@@ -388,6 +388,7 @@ public class ReactVideoView extends ScalableVideoView implements
     }
 
     public void setPausedModifier(final boolean paused) {
+
         mPaused = paused;
 
         if (!mMediaPlayerValid) {
@@ -410,7 +411,6 @@ public class ReactVideoView extends ScalableVideoView implements
                 mProgressUpdateHandler.post(mProgressUpdateRunnable);
             }
         }
-        setKeepScreenOn(!mPaused);
     }
 
     // reduces the volume based on stereoPan
@@ -529,6 +529,7 @@ public class ReactVideoView extends ScalableVideoView implements
     public void setControls(boolean controls) {
         this.mUseNativeControls = controls;
     }
+
 
     @Override
     public void onPrepared(MediaPlayer mp) {
@@ -659,11 +660,9 @@ public class ReactVideoView extends ScalableVideoView implements
 
     @Override
     public void onCompletion(MediaPlayer mp) {
+
         isCompleted = true;
         mEventEmitter.receiveEvent(getId(), Events.EVENT_END.toString(), null);
-        if (!mRepeat) {
-            setKeepScreenOn(false);
-        }
     }
         
     // This is not fully tested and does not work for all forms of timed metadata
@@ -697,13 +696,14 @@ public class ReactVideoView extends ScalableVideoView implements
 
     @Override
     protected void onDetachedFromWindow() {
+
         mMediaPlayerValid = false;
         super.onDetachedFromWindow();
-        setKeepScreenOn(false);
     }
 
     @Override
     protected void onAttachedToWindow() {
+
         super.onAttachedToWindow();
 
         if(mMainVer>0) {
@@ -712,7 +712,7 @@ public class ReactVideoView extends ScalableVideoView implements
         else {
             setSrc(mSrcUriString, mSrcType, mSrcIsNetwork, mSrcIsAsset, mRequestHeaders);
         }
-        setKeepScreenOn(true);
+
     }
 
     @Override
